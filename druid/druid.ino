@@ -1,21 +1,37 @@
 #include "gyro_read.h"
 #include <Wire.h>
 
-double x_pos = 0;
-double x_spd = 0;
-double x_offset = 3;
+float x_pos = 0;
+int x_spd;
+float x_offset = 3;
+int  *spd;
 
 void setup() {
   Wire.begin(); 
   Serial.begin(9600);
-  x_offset = get_x_offset();
+
+  Wire.beginTransmission(0x68);            
+  Wire.write(0x6B);
+  Wire.write(0x00);
+  Wire.endTransmission(true);
+
+  Wire.beginTransmission(0x68);
+  Wire.write(0x1B);
+  Wire.write(0x10);
+  Wire.endTransmission(true);
+
+  Wire.beginTransmission(0x68);
+  Wire.write(0x1B);
+  Wire.write(0x10);
+  Wire.endTransmission(true);
 }
 
 void loop() {
-  x_spd = get_x_spd(x_offset);
-  x_pos = x_pos + x_spd * 0.0101;
+
+  float raw[6];
   
-  Serial.println(x_pos);
+  x_spd = get_spd(raw);
+  Serial.println( raw[3] );
   
   delay(10);
 }

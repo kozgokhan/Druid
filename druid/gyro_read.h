@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-double get_x_spd(double offset);
+int get_spd(float * raw);
 double get_x_offset();
 
 #endif
