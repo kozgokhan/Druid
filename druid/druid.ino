@@ -1,10 +1,10 @@
 #include "gyro_read.h"
 #include <Wire.h>
 
-float x_pos = 0;
-int x_spd;
-float x_offset = 3;
-int  *spd;
+float raw[6];
+float offset[6];
+float accAngleX = 0;
+float gyroAngleX = 0;
 
 void setup() {
   Wire.begin(); 
@@ -24,14 +24,19 @@ void setup() {
   Wire.write(0x1B);
   Wire.write(0x10);
   Wire.endTransmission(true);
+
+  get_offset(offset);
+  
 }
 
 void loop() {
-
-  float raw[6];
   
-  x_spd = get_spd(raw);
-  Serial.println( raw[3] );
+  read_gyro(raw, offset);
+  accAngleX = (atan(raw[1] / sqrt(pow(raw[0], 2) + pow(raw[2], 2))) * 180 / PI);
+
+  gyroAngleX = gyroAngleX + raw[3]*0.01;
+  //Serial.println(gyroAngleX);
+  Serial.println( 0.96 * gyroAngleX + 0.04 * accAngleX );
   
   delay(10);
 }

@@ -3,7 +3,8 @@
 
 #include <Arduino.h>
 
-int get_spd(float * raw);
+int read_gyro(float * raw, float * offset);
+float * get_offset(float * offset);
 double get_x_offset();
 
 #endif
