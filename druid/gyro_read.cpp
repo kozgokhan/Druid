@@ -5,7 +5,7 @@ float * get_offset(float * offset){
   float raw[6] = {0};
   float sum[6] = {0};
   int sample = 0;
-  int max_sample = 10;
+  int max_sample = 50;
   int completed_num = 0;
   int max_iter = 10;
   int iter_cnt = 0;
@@ -37,13 +37,15 @@ int read_gyro(float * raw, float * offset) {
   Wire.requestFrom(0x68,6,true);
 
   float accAngleX, accAngleY;
+  float x_acc, y_acc, z_acc;
          
-  raw[0] = (float)(Wire.read()<<8|Wire.read()) / 16384.0  + offset[0]; // x_acc
-  raw[1] = (float)(Wire.read()<<8|Wire.read()) / 16384.0 + offset[1]; // y_acc
-  raw[2] = (float)(Wire.read()<<8|Wire.read()) / 16384.0 + offset[2]; // z_acc
+  x_acc = (float)(Wire.read()<<8|Wire.read()) / 16384.0; // x_acc
+  y_acc = (float)(Wire.read()<<8|Wire.read()) / 16384.0; // y_acc
+  z_acc = (float)(Wire.read()<<8|Wire.read()) / 16384.0; // z_acc
 
-  accAngleX = (atan(raw[1] / sqrt(pow(raw[0], 2) + pow(raw[2], 2))) * 180 / PI); // AccErrorX ~(0.58) See the calculate_IMU_error()custom function for more details
-  accAngleY = (atan(-1 * raw[0] / sqrt(pow(raw[1], 2) + pow(raw[2], 2))) * 180 / PI); // AccErrorY ~(-1.58)
+  raw[0] = (atan(y_acc / sqrt(pow(x_acc, 2) + pow(z_acc, 2))) * 180 / PI) + offset[0];
+  raw[1] = (atan(-1 * x_acc / sqrt(pow(y_acc, 2) + pow(z_acc, 2))) * 180 / PI) + offset[1];
+  raw[2] = 0.0 + offset[2];
 
   Wire.beginTransmission(0x68);
   Wire.write(0x43); // Gyro data first register address 0x43
