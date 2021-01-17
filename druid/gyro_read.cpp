@@ -1,6 +1,23 @@
 #include "gyro_read.h"
 #include <Wire.h>
 
+void init_mpu(){
+  Wire.beginTransmission(0x68);            
+  Wire.write(0x6B);
+  Wire.write(0x00);
+  Wire.endTransmission(true);
+
+  Wire.beginTransmission(0x68);
+  Wire.write(0x1B);
+  Wire.write(0x10);
+  Wire.endTransmission(true);
+
+  Wire.beginTransmission(0x68);
+  Wire.write(0x1B);
+  Wire.write(0x10);
+  Wire.endTransmission(true);
+  }
+
 float * get_offset(float * offset){
   float raw[6] = {0};
   float sum[6] = {0};
