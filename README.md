@@ -1,2 +1,2 @@
-# Druid
- Arduino Drone Project
+# YAQUP
+ Yet Another Quadrocopter Project
